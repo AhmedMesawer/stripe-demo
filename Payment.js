@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Button } from 'react-native';
+import { View, Button, Text } from 'react-native';
 import stripe from 'tipsi-stripe';
 
 stripe.setOptions({
@@ -10,6 +10,9 @@ export default class Payment extends Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            tokenId: ''
+        };
     }
 
     requestPayment = () => {
@@ -17,6 +20,7 @@ export default class Payment extends Component {
             .paymentRequestWithCardForm()
             .then(stripeTokenInfo => {
                 console.log('Token created', { stripeTokenInfo });
+                this.setState({ tokenId: stripeTokenInfo.tokenId })
             })
             .catch(error => {
                 console.log('Payment failed', { error });
@@ -30,6 +34,9 @@ export default class Payment extends Component {
                     title="Make a payment"
                     onPress={this.requestPayment}
                 />
+                <Text style={{ marginTop: 16, fontWeight: 'bold', fontSize: 16 }}>
+                    TokenId: {this.state.tokenId}
+                </Text>
             </View>
         );
     }
